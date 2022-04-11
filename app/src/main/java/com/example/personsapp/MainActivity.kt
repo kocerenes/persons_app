@@ -1,6 +1,7 @@
 package com.example.personsapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -15,6 +16,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.personsapp.entity.Persons
 import com.example.personsapp.ui.theme.PersonsAppTheme
 
@@ -25,7 +30,7 @@ class MainActivity : ComponentActivity() {
             PersonsAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    HomePage()
+                    PagePass()
                 }
             }
         }
@@ -33,7 +38,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomePage() {
+fun PagePass(){
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "home_page"){
+        composable("home_page"){
+            HomePage(navController = navController)
+        }
+        composable("person_register_page"){
+            PersonRegistrPage()
+        }
+        composable("person_detail_page/{person}"){
+            val personObject = navController.previousBackStackEntry?.savedStateHandle?.get<Persons>("selectedPerson")
+            personObject?.let {
+                PersonDetailPage(person = it)
+            }
+        }
+    }
+}
+
+@Composable
+fun HomePage(navController: NavController) {
 
     val isMakeSearch = remember {
         mutableStateOf(false)
@@ -111,7 +135,8 @@ fun HomePage() {
                         ) {
                             Row(
                                 modifier = Modifier.clickable {
-
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("selectedPerson",person)
+                                    navController.navigate("person_detail_page/{person}")
                                 }
                             ) {
                                 Row(
@@ -122,10 +147,15 @@ fun HomePage() {
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(text = "${person.person_name} - ${person.person_tel}")
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.delete_img),
-                                        contentDescription = "", tint = Color.Gray
-                                    )
+                                    IconButton(onClick = {
+                                        Log.e("sil","${person.person_name} silindi")
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.delete_img),
+                                            contentDescription = "", tint = Color.Gray
+                                        )
+                                    }
+
                                 }
                             }
                         }
@@ -136,7 +166,7 @@ fun HomePage() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                    navController.navigate("person_register_page")
                 },
                 backgroundColor = colorResource(id = R.color.teal_200),
                 content = {
@@ -155,6 +185,6 @@ fun HomePage() {
 @Composable
 fun DefaultPreview() {
     PersonsAppTheme {
-        HomePage()
+
     }
 }
