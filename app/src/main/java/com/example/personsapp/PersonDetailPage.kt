@@ -17,7 +17,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.personsapp.entity.Persons
+import com.example.personsapp.viewmodel.PersonDetailPageViewModel
 
 @Composable
 fun PersonDetailPage(person:Persons) {
@@ -30,6 +32,8 @@ fun PersonDetailPage(person:Persons) {
     }
     //geri tuşuna bastığımızda textFieldlardaki seçimi kaldırıcaz
     val localFocusManager = LocalFocusManager.current
+
+    val viewmodel:PersonDetailPageViewModel = viewModel()
     
     LaunchedEffect(key1 = true){
         tfPersonName.value = person.person_name
@@ -60,7 +64,7 @@ fun PersonDetailPage(person:Persons) {
                     onClick = {
                         val person_name = tfPersonName.value
                         val person_tel = tfPersonTelNo.value
-                        Log.e("güncelle", "${person.person_id} -- $person_name -- $person_tel")
+                        viewmodel.update(person.person_id,person_name,person_tel)
                         localFocusManager.clearFocus()
                     },
                     modifier = Modifier.size(250.dp, 50.dp)

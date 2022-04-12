@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,12 +17,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.personsapp.entity.Persons
 import com.example.personsapp.ui.theme.PersonsAppTheme
+import com.example.personsapp.viewmodel.HomePageViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,17 +41,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun PagePass(){
+fun PagePass() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home_page"){
-        composable("home_page"){
+    NavHost(navController = navController, startDestination = "home_page") {
+        composable("home_page") {
             HomePage(navController = navController)
         }
-        composable("person_register_page"){
+        composable("person_register_page") {
             PersonRegistrPage()
         }
-        composable("person_detail_page/{person}"){
-            val personObject = navController.previousBackStackEntry?.savedStateHandle?.get<Persons>("selectedPerson")
+        composable("person_detail_page/{person}") {
+            val personObject =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Persons>("selectedPerson")
             personObject?.let {
                 PersonDetailPage(person = it)
             }
@@ -65,16 +69,9 @@ fun HomePage(navController: NavController) {
     val tfSearch = remember {
         mutableStateOf("")
     }
-    val personList = remember {
-        mutableStateListOf<Persons>()
-    }
+    val viewmodel: HomePageViewModel = viewModel()
+    val personList = viewmodel.personList.observeAsState(listOf())
 
-    LaunchedEffect(key1 = true) {
-        val person1 = Persons(1, "Enes Koçer", "5418743127")
-        val person2 = Persons(1, "Arda Güler", "5433783192")
-        personList.add(person1)
-        personList.add(person2)
-    }
 
     Scaffold(
         topBar = {
@@ -83,7 +80,10 @@ fun HomePage(navController: NavController) {
                     if (isMakeSearch.value) {
                         TextField(
                             value = tfSearch.value,
-                            onValueChange = { tfSearch.value = it },
+                            onValueChange = {
+                                tfSearch.value = it
+                                viewmodel.search(it)
+                            },
                             label = { Text(text = "Ara") },
                             colors = TextFieldDefaults.textFieldColors(
                                 backgroundColor = Color.Transparent,
@@ -125,9 +125,9 @@ fun HomePage(navController: NavController) {
         content = {
             LazyColumn {
                 items(
-                    count = personList.count(),
+                    count = personList.value!!.count(),
                     itemContent = {
-                        val person = personList[it]
+                        val person = personList.value!![it]
                         Card(
                             modifier = Modifier
                                 .padding(all = 5.dp)
@@ -135,7 +135,10 @@ fun HomePage(navController: NavController) {
                         ) {
                             Row(
                                 modifier = Modifier.clickable {
-                                    navController.currentBackStackEntry?.savedStateHandle?.set("selectedPerson",person)
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                                        "selectedPerson",
+                                        person
+                                    )
                                     navController.navigate("person_detail_page/{person}")
                                 }
                             ) {
@@ -148,7 +151,7 @@ fun HomePage(navController: NavController) {
                                 ) {
                                     Text(text = "${person.person_name} - ${person.person_tel}")
                                     IconButton(onClick = {
-                                        Log.e("sil","${person.person_name} silindi")
+                                        viewmodel.delete(person.person_id)
                                     }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.delete_img),

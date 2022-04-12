@@ -16,6 +16,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.personsapp.repo.PersonDAORepsitory
+import com.example.personsapp.viewmodel.PersonRegisteryViewModel
 
 @Composable
 fun PersonRegistrPage() {
@@ -28,6 +31,8 @@ fun PersonRegistrPage() {
     }
     //geri tuşuna bastığımızda textFieldlardaki seçimi kaldırıcaz
     val localFocusManager = LocalFocusManager.current
+
+    var viewmodel:PersonRegisteryViewModel = viewModel()
 
     Scaffold(
         topBar = {
@@ -53,7 +58,7 @@ fun PersonRegistrPage() {
                     onClick = {
                         val person_name = tfPersonName.value
                         val person_tel = tfPersonTelNo.value
-                        Log.e("kayıt", "$person_name -- $person_tel")
+                        viewmodel.register(person_name,person_tel)
                         localFocusManager.clearFocus()
                     },
                     modifier = Modifier.size(250.dp, 50.dp)
