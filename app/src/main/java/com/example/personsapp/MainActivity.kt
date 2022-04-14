@@ -1,5 +1,6 @@
 package com.example.personsapp
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -13,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.personsapp.entity.Persons
 import com.example.personsapp.ui.theme.PersonsAppTheme
 import com.example.personsapp.viewmodel.HomePageViewModel
+import com.example.personsapp.viewmodelfactory.HomePageViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,9 +72,15 @@ fun HomePage(navController: NavController) {
     val tfSearch = remember {
         mutableStateOf("")
     }
-    val viewmodel: HomePageViewModel = viewModel()
+    val context = LocalContext.current
+    val viewmodel: HomePageViewModel = viewModel(
+        factory = HomePageViewModelFactory(context.applicationContext as Application)
+    )
     val personList = viewmodel.personList.observeAsState(listOf())
 
+    LaunchedEffect(key1 = true){
+        viewmodel.personsLoad()
+    }
 
     Scaffold(
         topBar = {

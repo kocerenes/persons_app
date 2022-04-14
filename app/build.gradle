@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
 }
+apply plugin: "kotlin-kapt"
 
 android {
     compileSdk 32
@@ -69,4 +70,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
 
     implementation "androidx.compose.runtime:runtime-livedata:1.2.0-alpha07"
+
+    //Room
+    implementation "androidx.room:room-runtime:2.5.0-alpha01"
+    kapt "androidx.room:room-compiler:2.5.0-alpha01"
+    //Coroutine
+    implementation "androidx.room:room-ktx:2.5.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 }

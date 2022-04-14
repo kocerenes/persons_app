@@ -1,14 +1,16 @@
 package com.example.personsapp.viewmodel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.personsapp.entity.Persons
 import com.example.personsapp.repo.PersonDAORepsitory
 
-class HomePageViewModel :ViewModel() {
+class HomePageViewModel(application: Application) :AndroidViewModel(application) {
 
-    var personRepo = PersonDAORepsitory()
+    var personRepo = PersonDAORepsitory(application)
     var personList = MutableLiveData<List<Persons>>()
 
     init {

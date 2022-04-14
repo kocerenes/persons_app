@@ -1,5 +1,6 @@
 package com.example.personsapp
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,13 +14,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.personsapp.entity.Persons
+import com.example.personsapp.viewmodel.HomePageViewModel
 import com.example.personsapp.viewmodel.PersonDetailPageViewModel
+import com.example.personsapp.viewmodelfactory.HomePageViewModelFactory
+import com.example.personsapp.viewmodelfactory.PersonDetailPageViewModelFactory
 
 @Composable
 fun PersonDetailPage(person:Persons) {
@@ -33,7 +38,10 @@ fun PersonDetailPage(person:Persons) {
     //geri tuşuna bastığımızda textFieldlardaki seçimi kaldırıcaz
     val localFocusManager = LocalFocusManager.current
 
-    val viewmodel:PersonDetailPageViewModel = viewModel()
+    val context = LocalContext.current
+    val viewmodel: PersonDetailPageViewModel = viewModel(
+        factory = PersonDetailPageViewModelFactory(context.applicationContext as Application)
+    )
     
     LaunchedEffect(key1 = true){
         tfPersonName.value = person.person_name

@@ -1,5 +1,6 @@
 package com.example.personsapp
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,13 +13,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.personsapp.repo.PersonDAORepsitory
+import com.example.personsapp.viewmodel.HomePageViewModel
 import com.example.personsapp.viewmodel.PersonRegisteryViewModel
+import com.example.personsapp.viewmodelfactory.HomePageViewModelFactory
+import com.example.personsapp.viewmodelfactory.PersonRegistryViewModelFactory
 
 @Composable
 fun PersonRegistrPage() {
@@ -32,7 +37,10 @@ fun PersonRegistrPage() {
     //geri tuşuna bastığımızda textFieldlardaki seçimi kaldırıcaz
     val localFocusManager = LocalFocusManager.current
 
-    var viewmodel:PersonRegisteryViewModel = viewModel()
+    val context = LocalContext.current
+    val viewmodel: PersonRegisteryViewModel = viewModel(
+        factory = PersonRegistryViewModelFactory(context.applicationContext as Application)
+    )
 
     Scaffold(
         topBar = {
