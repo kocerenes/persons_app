@@ -3,7 +3,7 @@ package com.example.personsapp.room
 import androidx.room.*
 import com.example.personsapp.entity.Persons
 
-@Dao
+/*@Dao
 interface PersonDao {
 
     @Query("SELECT * FROM persons")
@@ -22,4 +22,4 @@ interface PersonDao {
     @Query("SELECT * FROM persons WHERE person_name like '%' || :searchedWord || '%'")
     suspend fun searchPerson(searchedWord : String) : List<Persons>
 
-}
+}*/

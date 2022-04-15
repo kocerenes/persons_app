@@ -158,9 +158,9 @@ fun HomePage(navController: NavController) {
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = "${person.person_name} - ${person.person_tel}")
+                                    Text(text = "${person.kisi_ad} - ${person.kisi_tel}")
                                     IconButton(onClick = {
-                                        viewmodel.delete(person.person_id)
+                                        viewmodel.delete(person.kisi_id)
                                     }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.delete_img),

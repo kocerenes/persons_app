@@ -44,8 +44,8 @@ fun PersonDetailPage(person:Persons) {
     )
     
     LaunchedEffect(key1 = true){
-        tfPersonName.value = person.person_name
-        tfPersonTelNo.value = person.person_tel
+        tfPersonName.value = person.kisi_ad
+        tfPersonTelNo.value = person.kisi_tel
     }
 
     Scaffold(
@@ -72,7 +72,7 @@ fun PersonDetailPage(person:Persons) {
                     onClick = {
                         val person_name = tfPersonName.value
                         val person_tel = tfPersonTelNo.value
-                        viewmodel.update(person.person_id,person_name,person_tel)
+                        viewmodel.update(person.kisi_id,person_name,person_tel)
                         localFocusManager.clearFocus()
                     },
                     modifier = Modifier.size(250.dp, 50.dp)
